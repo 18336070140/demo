@@ -50,7 +50,7 @@ class ResData{
 		while (FLAG){
 			System.out.println("pro"+FLAG);
 			data = atomicInteger.incrementAndGet()+"";
-			retValue = blockingQueue.offer(data,2l, TimeUnit.SECONDS);
+			retValue = blockingQueue.offer(data, 2L, TimeUnit.SECONDS);
 			if(retValue){
 				System.out.println(Thread.currentThread().getName()+"入队成功");
 			}else {
@@ -65,7 +65,7 @@ class ResData{
 		String retValue = null;
 		while (FLAG){
 			System.out.println("cus"+FLAG);
-			retValue = blockingQueue.poll(2l,TimeUnit.SECONDS);
+			retValue = blockingQueue.poll(2L,TimeUnit.SECONDS);
 			if(retValue == null || "".equalsIgnoreCase(retValue)){
 //				FLAG=false;
 				System.out.println("超过时间没取到");
