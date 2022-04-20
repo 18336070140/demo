@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSON;
 import java.beans.BeanInfo;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,15 +17,15 @@ public class CatTree2 {
         List<Cate> cateList = new ArrayList<>();
         Map<String,Cate> cateMap = new HashMap<>();
         for (Cate cat : list) {
-            if(cateMap.get(cat.getCateId())!=null){
+            if(cateMap.get(cat.getCateId()) != null){
                 //合并属性工具
-                merge(cateMap.get(cat.getCateId()),cat);
+                mergeObject(cateMap.get(cat.getCateId()),cat);
             }else {
                 cateMap.put(cat.getCateId(),cat);
             }
             if(cat.getCatePId()!=null){
                 Cate parent = cateMap.get(cat.getCatePId()) !=null ? cateMap.get(cat.getCatePId()): new Cate(cat.getCatePId(),null,"","");
-                List<Cate> children = parent.getChildren()!= null ? parent.getChildren():new ArrayList<>();
+                List<Cate> children = parent.getChildren() != null ? parent.getChildren():new ArrayList<>();
                 children.add(cat);
                 parent.setChildren(children);
                 cateMap.put(cat.getCatePId(),parent);
@@ -45,6 +46,27 @@ public class CatTree2 {
             }
         }
     }
+    public static <T>  void mergeObject(T origin, T destination) {
+        if (origin == null || destination == null){
+            return;
+        }
+        if(!origin.getClass().equals(destination.getClass())){
+            return;
+        }
+        Field[] fields =origin.getClass().getDeclaredFields();
+        for (int i = 0; i < fields.length; i++) {
+            try {
+                fields[i].setAccessible(true);
+                Object value = fields[i].get(origin);
+                if (null != value) {
+                    fields[i].set(destination, value);
+                }
+                fields[i].setAccessible(false);
+            }catch (Exception e) {
+            }
+        }
+    }
+
 
     static class Tag{
         private String tagId;
